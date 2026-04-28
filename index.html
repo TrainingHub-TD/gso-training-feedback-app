@@ -1598,7 +1598,30 @@ function retryTest() {
 }
 
 function downloadPDF() {
+  // Show all sections before printing (inline styles override CSS @media print)
+  var sections = document.querySelectorAll(".section-block");
+  var origStyles = [];
+  sections.forEach(function(s) {
+    origStyles.push(s.style.display);
+    s.style.display = "block";
+    s.classList.add("active-section");
+  });
+  // Hide interactive elements
+  var hide = document.querySelectorAll(".topnav, .sec-nav, .back-to-top, #resultsPage, .completion-card, .lightbox-overlay, .qr-overlay, .qr-panel");
+  hide.forEach(function(el) { el.setAttribute("data-ph", el.style.display); el.style.display = "none"; });
+
+  // Open all FAQs
+  document.querySelectorAll(".faq-item").forEach(function(f) { f.classList.add("open"); });
+
   window.print();
+
+  // Restore after print
+  sections.forEach(function(s, i) {
+    s.style.display = origStyles[i];
+    if (origStyles[i] !== "block") s.classList.remove("active-section");
+  });
+  hide.forEach(function(el) { el.style.display = el.getAttribute("data-ph") || ""; });
+  document.querySelectorAll(".faq-item").forEach(function(f) { f.classList.remove("open"); });
 }
 
 // LIGHTBOX
