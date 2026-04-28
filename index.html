@@ -533,14 +533,47 @@ overflow-x:hidden;}
 .results-cta-card.mark-complete-cta .results-cta-icon{color:#fff;font-size:22px;}
 
 @media print {
-  .topnav, .sec-nav, .results-cta-section, #resultsActions, .results-hero,
-  .required-banner, .results-retry-btn, .lightbox-overlay { display:none !important; }
-  .section-block { display:none !important; }
-  #sec-7 { display:block !important; }
-  .results-page { display:block !important; max-width:100% !important; padding:0 !important; }
-  .results-review { box-shadow:none !important; border:1px solid #ddd !important; }
-  .results-q-row { break-inside:avoid; }
-  body { background:#fff !important; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: #fff !important; margin: 0; }
+
+  /* Hide all interactive chrome */
+  .topnav, .sec-nav, .back-to-top, .qr-overlay, .qr-panel,
+  .lightbox-overlay, #resultsPage, .results-page,
+  .completion-card, #resultsActions, .required-banner,
+  .results-retry-btn, .hero, .ov-bg-wrap,
+  .test-unanswered, .submit-btn { display: none !important; }
+
+  /* Show ALL content sections */
+  .section-block {
+    display: block !important;
+    max-width: 100% !important;
+    padding: 24px 32px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+    page-break-after: always;
+    break-after: page;
+    box-shadow: none !important;
+  }
+  .section-block:last-of-type { page-break-after: auto; break-after: auto; }
+
+  .sec-label { color: #4B286D !important; font-size: 10px; text-transform: uppercase; }
+  .sec-title { color: #4B286D !important; font-size: 20px; font-weight: 900; border-bottom: 2px solid #4B286D; padding-bottom: 8px; margin-bottom: 16px; }
+  .sec-intro { color: #555 !important; font-size: 13px; margin-bottom: 16px; }
+
+  img { max-width: 100% !important; height: auto !important; page-break-inside: avoid; }
+
+  .callout { page-break-inside: avoid; border-left: 4px solid #66CC00 !important; padding: 10px 14px; background: #f0f9eb !important; }
+  .callout.cw { border-left-color: #f0a500 !important; background: #fff9f0 !important; }
+  .callout.cp { border-left-color: #4B286D !important; background: #f5f0ff !important; }
+
+  .faq-item .faq-a { display: block !important; max-height: none !important; overflow: visible !important; }
+  .faq-q::after { display: none; }
+
+  .ft-card, .metric-row, .wf-step { page-break-inside: avoid; }
+
+  #sec-7 .test-q { page-break-inside: avoid; }
+  .active-section { max-width: 100% !important; }
 }
 
 /* COMPLETION CARD */
@@ -778,7 +811,7 @@ overflow-x:hidden;}
   <div class="why-hook">
     <div class="why-hook-icon">💬</div>
     <div class="why-hook-text">
-      <strong>Sound familiar?</strong> You finish a coaching session, open the spreadsheet, update it, send a Google Chat to the agent, make a note in a doc somewhere… and by Friday you're not sure if any of it actually happened.
+      <strong>The old way added up quickly.</strong> A coaching session, then updating the spreadsheet, sending a message in Google Chat, filing a note somewhere — each step small on its own, but together they took real time away from what actually matters: your agents.
     </div>
   </div>
 
@@ -1565,35 +1598,7 @@ function retryTest() {
 }
 
 function downloadPDF() {
-  // Open a new tab and trigger browser print dialog
-  // The user can Save as PDF from the print dialog
-  var printWindow = window.open('', '_blank');
-  if (!printWindow) {
-    alert('Please allow popups for this page to download the PDF.');
-    return;
-  }
-  
-  var style = '<style>body{font-family:Arial,sans-serif;font-size:13px;line-height:1.7;color:#222;max-width:800px;margin:0 auto;padding:32px;}h1{color:#4B286D;font-size:24px;border-bottom:3px solid #4B286D;padding-bottom:8px;}h2{color:#4B286D;font-size:16px;margin-top:24px;}h3{color:#333;font-size:14px;}p,li{margin:6px 0;}strong{font-weight:700;}.callout{background:#f0f9eb;border-left:4px solid #66CC00;padding:10px 14px;margin:12px 0;border-radius:0 6px 6px 0;}.warn{background:#fff9f0;border-left:4px solid #f0a500;}img{display:none;}@media print{h1{page-break-before:always;}}<\/style>';
-  
-  var content = '<h1>GSO Feedback App — Team Leader Training Guide</h1><p><em>TELUS Digital GSO · 2026</em></p>';
-  
-  var secIds = ["sec-0","sec-1","sec-2","sec-3","sec-4","sec-5","sec-6"];
-  var secTitles = ["Overview","What & Why","What You Can See & Do","How to Use It","Key Metrics","FAQs","What\u2019s Coming"];
-  
-  for (var i = 0; i < secIds.length; i++) {
-    var el = document.getElementById(secIds[i]);
-    if (!el) continue;
-    var clone = el.cloneNode(true);
-    // Remove interactive & image elements
-    var remove = clone.querySelectorAll('.sec-nav,.back-to-top,.sec-label,.topnav,button,input,.ov-nav,.tour-nav,.wf,.home-screen-intro img,.ft-screenshot,img');
-    remove.forEach(function(n){ n.remove(); });
-    content += '<h1>' + secTitles[i] + '<\/h1>' + clone.innerHTML;
-  }
-  
-  printWindow.document.open();
-  printWindow.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>TL Training Guide<\/title>' + style + '<\/head><body>' + content + '<\/body><\/html>');
-  printWindow.document.close();
-  setTimeout(function(){ printWindow.print(); }, 800);
+  window.print();
 }
 
 // LIGHTBOX
